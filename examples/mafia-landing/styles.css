@@ -1,0 +1,572 @@
+/* =============================================
+   DIORAMA EXAMPLE — 1920s Mafia Speakeasy
+   Art Bible: see art-bible.md
+   =============================================
+
+   This stylesheet demonstrates every Diorama composition
+   pattern. In production, the placeholder styles would be
+   replaced by actual generated assets from the pipeline.
+   ============================================= */
+
+/* ---- CSS Custom Properties (from Art Bible) ---- */
+:root {
+  /* Palette */
+  --midnight:     #0A0E1A;
+  --charcoal:     #1C2333;
+  --brass:        #D4A854;
+  --ivory:        #F5E6C8;
+  --crimson:      #8B1A1A;
+  --fog:          #4A5568;
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body:    'Libre Baskerville', Georgia, serif;
+
+  /* Motion (Art Bible: "slow, heavy, deliberate") */
+  --ease-heavy:   cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-speed: 1;
+  --motion-distance: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-speed: 0;
+    --motion-distance: 0;
+  }
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--midnight);
+  color: var(--ivory);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ================================================
+   NAVIGATION
+   Uses custom generated icons, NOT default icon sets
+   ================================================ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(to bottom, rgba(10, 14, 26, 0.95), rgba(10, 14, 26, 0));
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--brass);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: var(--ivory);
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.75;
+  transition: opacity 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible {
+  opacity: 1;
+  color: var(--brass);
+}
+
+/* Custom nav icons — in production, these use generated assets */
+.nav-icon {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  /* In production: background-image: url('assets/icons/xxx.png'); */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.6;
+}
+
+/* ================================================
+   DIORAMA SCENE — Layer Composition System
+   ================================================ */
+.diorama-scene {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.diorama-layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  will-change: transform;
+  /* Entrance animation base state */
+  opacity: 0;
+  transform: scale(1.05);
+  transition:
+    opacity 0.8s var(--ease-heavy),
+    transform 0.8s var(--ease-heavy);
+}
+
+/* Stagger delays by layer depth */
+.diorama-layer[style*="--z: 0"]  { transition-delay: 0s;    }
+.diorama-layer[style*="--z: 10"] { transition-delay: 0.15s; }
+.diorama-layer[style*="--z: 20"] { transition-delay: 0.3s;  }
+.diorama-layer[style*="--z: 30"] { transition-delay: 0.45s; }
+.diorama-layer[style*="--z: 40"] { transition-delay: 0.6s;  }
+.diorama-layer[style*="--z: 41"] { transition-delay: 0.7s;  }
+
+/* Revealed state */
+.diorama-scene.is-revealed .diorama-layer {
+  opacity: 1;
+  transform: none;
+}
+
+/* Content layer */
+.diorama-content {
+  position: relative;
+  z-index: var(--z, 50);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  pointer-events: auto;
+  /* Entrance animation */
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+  transition-delay: 0.8s;
+}
+
+.diorama-scene.is-revealed .diorama-content {
+  opacity: 1;
+  transform: none;
+}
+
+/* Texture overlay blend modes */
+.diorama-texture {
+  pointer-events: none;
+}
+
+.diorama-texture--smoke {
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.diorama-scene.is-revealed .diorama-texture--smoke {
+  opacity: 0.3;
+}
+
+.diorama-texture--grain {
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.diorama-scene.is-revealed .diorama-texture--grain {
+  opacity: 0.15;
+}
+
+/* Ambient drift — smoke drifts slowly (ONE motion moment) */
+.diorama-ambient-drift {
+  animation: ambient-drift calc(30s * var(--motion-speed)) linear infinite;
+}
+
+@keyframes ambient-drift {
+  from   { transform: translate3d(0, 0, 0); }
+  50%    { transform: translate3d(-3%, -1.5%, 0); }
+  to     { transform: translate3d(0, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diorama-ambient-drift {
+    animation: none;
+  }
+}
+
+/* ================================================
+   PLACEHOLDER STYLES (replace with real assets)
+   These simulate the visual layers for the example.
+   In production, each placeholder is an <img> tag
+   pointing to a chroma-keyed transparent PNG.
+   ================================================ */
+.placeholder-bg {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--midnight) 0%,
+    var(--charcoal) 30%,
+    #0F1623 50%,
+    var(--charcoal) 70%,
+    var(--midnight) 100%
+  );
+  /* Simulate foggy street with radial overlay */
+  position: relative;
+}
+
+.placeholder-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 30% 50%,
+    rgba(212, 168, 84, 0.08) 0%,
+    transparent 50%
+  );
+}
+
+.placeholder-layer {
+  width: 100%;
+  height: 100%;
+}
+
+.placeholder-midground {
+  /* Simulates car/lamp silhouettes */
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(28, 35, 51, 0.6) 0%, transparent 20%),
+    radial-gradient(ellipse at 75% 75%, rgba(28, 35, 51, 0.4) 0%, transparent 15%);
+}
+
+.placeholder-character {
+  /* Simulates character silhouette in center */
+  background: radial-gradient(
+    ellipse at 50% 55%,
+    rgba(10, 14, 26, 0.5) 0%,
+    transparent 25%
+  );
+}
+
+.placeholder-foreground {
+  /* Simulates foreground objects at bottom */
+  background: linear-gradient(
+    to top,
+    rgba(10, 14, 26, 0.7) 0%,
+    transparent 30%
+  );
+}
+
+.placeholder-smoke {
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(245, 230, 200, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse at 70% 60%, rgba(245, 230, 200, 0.03) 0%, transparent 35%);
+}
+
+.placeholder-grain {
+  /* Simulated grain via CSS noise */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* ================================================
+   HERO CONTENT
+   ================================================ */
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 900;
+  color: var(--ivory);
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-shadow: 0 4px 30px rgba(10, 14, 26, 0.8);
+  margin-bottom: 1rem;
+}
+
+.hero-tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  color: var(--brass);
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.05em;
+}
+
+/* CTA button — uses custom brass-knuckles icon, not a default arrow */
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2.5rem;
+  background: var(--crimson);
+  color: var(--ivory);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  border: 1px solid rgba(212, 168, 84, 0.3);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.cta-button:hover,
+.cta-button:focus-visible {
+  background: #A52020;
+  border-color: var(--brass);
+}
+
+.cta-button:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+}
+
+/* Custom CTA icon — in production: generated brass-knuckles motif */
+.cta-icon {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  /* In production: background-image: url('assets/motifs/brass-knuckles.png'); */
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* ================================================
+   SECTIONS
+   ================================================ */
+.section {
+  padding: 6rem 2rem;
+}
+
+.section-inner {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  color: var(--ivory);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Custom divider — uses generated Ace of Spades motif */
+.diorama-divider {
+  border: none;
+  height: 2.5rem;
+  /* In production: background: url('assets/motifs/ace-of-spades.png') center/contain no-repeat; */
+  background: radial-gradient(circle at center, var(--brass) 2px, transparent 2px);
+  background-size: 12px 12px;
+  background-position: center;
+  margin: 1.5rem auto 2.5rem;
+  max-width: 8rem;
+  opacity: 0.5;
+}
+
+/* Custom list — uses bullet-casing motifs instead of default markers */
+.diorama-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.diorama-list li {
+  position: relative;
+  padding-left: 2.5rem;
+  margin-bottom: 1.25rem;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--ivory);
+}
+
+.diorama-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.4em;
+  width: 1.25rem;
+  height: 1.25rem;
+  /* In production: background: url('assets/motifs/bullet-casing.png') center/contain no-repeat; */
+  /* Placeholder: a brass dot */
+  background: var(--brass);
+  border-radius: 50% 50% 30% 30%;
+  opacity: 0.7;
+}
+
+/* ================================================
+   CHARACTER CARDS
+   ================================================ */
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 2.5rem;
+  margin-top: 2rem;
+}
+
+.character-card {
+  text-align: center;
+}
+
+.character-portrait {
+  width: 10rem;
+  height: 12rem;
+  margin: 0 auto 1.25rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.placeholder-portrait {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    var(--charcoal),
+    var(--midnight)
+  );
+  border-bottom: 2px solid var(--brass);
+}
+
+.character-name {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ivory);
+  margin-bottom: 0.25rem;
+}
+
+.character-role {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--brass);
+  letter-spacing: 0.04em;
+}
+
+/* ================================================
+   SECTION REVEALS — One consistent animation
+   ================================================ */
+.diorama-reveal {
+  opacity: 0;
+  transform: translateY(calc(30px * var(--motion-distance)));
+  transition:
+    opacity 0.7s var(--ease-heavy),
+    transform 0.7s var(--ease-heavy);
+}
+
+.diorama-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diorama-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ================================================
+   FOOTER
+   ================================================ */
+.footer {
+  padding: 3rem 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(212, 168, 84, 0.15);
+}
+
+.footer-text {
+  font-size: 0.9rem;
+  color: var(--fog);
+  margin-bottom: 0.5rem;
+}
+
+.footer-subtext {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--fog);
+  opacity: 0.6;
+}
+
+/* ================================================
+   RESPONSIVE — Graceful degradation for layers
+   ================================================ */
+@media (max-width: 1024px) {
+  .diorama-layer[data-depth] {
+    /* Reduce parallax on tablets */
+  }
+
+  /* Hide foreground props — they crowd the content */
+  .diorama-layer[style*="--z: 30"] {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .diorama-scene {
+    min-height: 85vh;
+  }
+
+  /* Disable parallax on mobile */
+  .diorama-layer[data-depth] {
+    transform: none !important;
+  }
+
+  /* Keep only: background, character, textures, content */
+  .diorama-layer[style*="--z: 10"] {
+    display: none;
+  }
+
+  .diorama-layer[style*="--z: 30"] {
+    display: none;
+  }
+
+  .diorama-content {
+    justify-content: flex-end;
+    padding-bottom: 3rem;
+  }
+
+  .nav {
+    padding: 0.75rem 1.25rem;
+  }
+
+  .nav-links {
+    display: none; /* Hamburger menu in production */
+  }
+
+  .character-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

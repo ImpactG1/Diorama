@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Family — A Prohibition-Era Tale</title>
+  <meta name="description" content="Enter the speakeasy. Every empire starts with a single deal.">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Art Bible typeface: Playfair Display (period-appropriate serif) + Libre Baskerville -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ============================================
+       NAVIGATION — Uses custom icon set, NOT default icons
+       ============================================ -->
+  <nav class="nav" id="main-nav" aria-label="Main navigation">
+    <a href="#" class="nav-logo">The Family</a>
+    <ul class="nav-links">
+      <li><a href="#story">
+        <span class="nav-icon nav-icon--enter" aria-hidden="true"></span>
+        Story
+      </a></li>
+      <li><a href="#family">
+        <span class="nav-icon nav-icon--fedora" aria-hidden="true"></span>
+        The Family
+      </a></li>
+      <li><a href="#code">
+        <span class="nav-icon nav-icon--whiskey" aria-hidden="true"></span>
+        The Code
+      </a></li>
+      <li><a href="#contact">
+        <span class="nav-icon nav-icon--envelope" aria-hidden="true"></span>
+        Contact
+      </a></li>
+    </ul>
+  </nav>
+
+  <!-- ============================================
+       HERO SCENE — Layer-composited Diorama
+       Each layer is a real positioned DOM element.
+       ============================================ -->
+  <section class="diorama-scene" id="hero-scene" aria-label="Hero scene">
+
+    <!-- z-index 0: Background plate — foggy street, no transparency needed -->
+    <div class="diorama-layer" data-depth="0" style="--z: 0">
+      <!--
+        In production: <img src="assets/background-plate.png" ...>
+        This example uses a CSS gradient placeholder to demonstrate structure.
+      -->
+      <div class="placeholder-bg" role="presentation" aria-hidden="true">
+        <!-- Placeholder for: Foggy Prohibition-era street at night -->
+      </div>
+    </div>
+
+    <!-- z-index 10: Midground props — Model T, lamp post -->
+    <div class="diorama-layer" data-depth="0.3" style="--z: 10">
+      <!--
+        In production: <img src="assets/midground-props.png" alt="" role="presentation">
+        Generated on green screen → chroma keyed → verified alpha
+      -->
+      <div class="placeholder-layer placeholder-midground" role="presentation" aria-hidden="true">
+        <!-- Placeholder for: Parked car silhouette, lamp post -->
+      </div>
+    </div>
+
+    <!-- z-index 20: Hero character — the focal figure -->
+    <div class="diorama-layer" data-depth="0.6" style="--z: 20">
+      <!--
+        In production: <img src="assets/hero-character.png"
+          alt="A man in a pinstripe suit and fedora, standing confidently with a cigarette">
+        This is the ONLY layer that gets a meaningful alt text.
+      -->
+      <div class="placeholder-layer placeholder-character" role="img"
+           aria-label="A man in a pinstripe suit and fedora, standing confidently">
+        <!-- Placeholder for: Hero character cutout -->
+      </div>
+    </div>
+
+    <!-- z-index 30: Foreground props -->
+    <div class="diorama-layer" data-depth="0.9" style="--z: 30">
+      <div class="placeholder-layer placeholder-foreground" role="presentation" aria-hidden="true">
+        <!-- Placeholder for: Whiskey glass, revolver, bills -->
+      </div>
+    </div>
+
+    <!-- z-index 40: Texture — smoke (ambient drift animation) -->
+    <div class="diorama-layer diorama-texture diorama-texture--smoke diorama-ambient-drift"
+         data-depth="0" style="--z: 40">
+      <div class="placeholder-layer placeholder-smoke" role="presentation" aria-hidden="true">
+        <!-- Placeholder for: Smoke wisps, mix-blend-mode: screen -->
+      </div>
+    </div>
+
+    <!-- z-index 41: Texture — film grain (static, overlay blend) -->
+    <div class="diorama-layer diorama-texture diorama-texture--grain"
+         data-depth="0" style="--z: 41">
+      <div class="placeholder-layer placeholder-grain" role="presentation" aria-hidden="true">
+        <!-- Placeholder for: 35mm film grain, mix-blend-mode: overlay -->
+      </div>
+    </div>
+
+    <!-- z-index 50: Content — REAL TEXT in the DOM, never baked into images -->
+    <div class="diorama-content" style="--z: 50">
+      <h1 class="hero-title">The Family</h1>
+      <p class="hero-tagline">Every empire starts with a single deal.</p>
+      <a href="#story" class="cta-button" id="hero-cta">
+        <span class="cta-icon" aria-hidden="true"></span>
+        Enter the Speakeasy
+      </a>
+    </div>
+
+  </section>
+
+  <!-- ============================================
+       THE CODE — Feature list with custom bullet motifs
+       Uses bullet-casing images instead of default <li> markers.
+       ============================================ -->
+  <section class="section section--code diorama-reveal" id="code">
+    <div class="section-inner">
+      <h2 class="section-title">The Code</h2>
+      <!-- Custom divider using generated Ace of Spades motif -->
+      <hr class="diorama-divider" aria-hidden="true">
+      <ul class="diorama-list">
+        <li>Family above everything. Blood is thicker than whiskey.</li>
+        <li>What's said in the back room stays in the back room.</li>
+        <li>A man's word is his bond. Break it, and you break yourself.</li>
+        <li>Respect is earned at the table, not demanded from a throne.</li>
+        <li>Never let them see you sweat. Composure is currency.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================
+       THE FAMILY — Character cards section
+       Each card would use a separately generated character cutout.
+       ============================================ -->
+  <section class="section section--family diorama-reveal" id="family">
+    <div class="section-inner">
+      <h2 class="section-title">The Family</h2>
+      <hr class="diorama-divider" aria-hidden="true">
+      <div class="character-grid">
+        <article class="character-card">
+          <div class="character-portrait">
+            <!-- In production: <img src="assets/characters/the-boss.png"
+                 alt="The Boss — a weathered man in his 50s with steel-grey hair"> -->
+            <div class="placeholder-portrait" aria-label="The Boss"></div>
+          </div>
+          <h3 class="character-name">Don Vittorio</h3>
+          <p class="character-role">The Patriarch</p>
+        </article>
+        <article class="character-card">
+          <div class="character-portrait">
+            <div class="placeholder-portrait" aria-label="The Consigliere"></div>
+          </div>
+          <h3 class="character-name">Salvatore</h3>
+          <p class="character-role">The Consigliere</p>
+        </article>
+        <article class="character-card">
+          <div class="character-portrait">
+            <div class="placeholder-portrait" aria-label="The Enforcer"></div>
+          </div>
+          <h3 class="character-name">Elena</h3>
+          <p class="character-role">The Enforcer</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="footer" id="contact">
+    <div class="footer-inner">
+      <p class="footer-text">© 1927 The Family. All rights reserved in perpetuity.</p>
+      <p class="footer-subtext">This establishment does not exist. You were never here.</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ================================================
+       PARALLAX — The scene's ONE orchestrated motion
+       ================================================ */
+    function initDioramaParallax() {
+      const scene = document.querySelector('.diorama-scene');
+      if (!scene) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const layers = scene.querySelectorAll('.diorama-layer[data-depth]');
+
+      function onScroll() {
+        const scrollY = window.scrollY;
+        const sceneTop = scene.offsetTop;
+        const offset = scrollY - sceneTop;
+
+        layers.forEach(layer => {
+          const depth = parseFloat(layer.dataset.depth) || 0;
+          const translate = -(offset * depth * 0.15);
+          layer.style.transform = `translate3d(0, ${translate}px, 0)`;
+        });
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+
+    /* ================================================
+       LAYER ENTRANCE STAGGER
+       ================================================ */
+    function initDioramaEntrance() {
+      const scene = document.querySelector('.diorama-scene');
+      if (!scene) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        scene.classList.add('is-revealed');
+        return;
+      }
+
+      // Trigger after a short delay to let the page settle
+      setTimeout(() => {
+        scene.classList.add('is-revealed');
+      }, 200);
+    }
+
+    /* ================================================
+       SECTION REVEALS — One consistent animation
+       ================================================ */
+    function initSectionReveals() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.diorama-reveal').forEach(el => {
+          el.classList.add('is-visible');
+        });
+        return;
+      }
+
+      const sections = document.querySelectorAll('.diorama-reveal');
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: '0px 0px -50px 0px' }
+      );
+
+      sections.forEach(section => observer.observe(section));
+    }
+
+    /* Initialize everything */
+    document.addEventListener('DOMContentLoaded', () => {
+      initDioramaEntrance();
+      initDioramaParallax();
+      initSectionReveals();
+    });
+  </script>
+
+</body>
+</html>
