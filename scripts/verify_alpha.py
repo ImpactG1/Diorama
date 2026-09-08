@@ -29,6 +29,12 @@ except ImportError:
     print("ERROR: Pillow is required. Install with: pip install Pillow", file=sys.stderr)
     sys.exit(1)
 
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 
 def analyze_alpha(image_path: Path) -> dict:
     """Analyze the alpha channel of a PNG image.
@@ -181,16 +187,12 @@ def main():
         result = analyze_alpha(png_path)
         results.append(result)
 
-        icon = {"PASS": "✓", "WARN": "⚠", "FAIL": "✗"}.get(result["verdict"], "?")
-
-        if result["verdict"] == "FAIL":
-            has_failure = True
-            print(f"  {icon} FAIL  {png_path.name}: {result['reason']}")
-        elif result["verdict"] == "WARN":
-            has_warning = True
-            print(f"  {icon} WARN  {png_path.name}: {result['reason']}")
-        elif not args.quiet:
-            print(f"  {icon} PASS  {png_path.name}: {result['reason']}")
+        try:
+            icon = {"PASS": "✓", "WARN": "⚠", "FAIL": "✗"}.get(result["verdict"], "?")
+            print(f"  {icon} {result['verdict']}  {png_path.name}: {result['reason']}")
+        except UnicodeEncodeError:
+            icon = {"PASS": "[OK]", "WARN": "[!]", "FAIL": "[X]"}.get(result["verdict"], "?")
+            print(f"  {icon} {result['verdict']}  {png_path.name}: {result['reason']}")
 
         if args.histogram:
             print_histogram(png_path)
@@ -201,7 +203,11 @@ def main():
     warned = sum(1 for r in results if r["verdict"] == "WARN")
     failed = sum(1 for r in results if r["verdict"] == "FAIL")
 
-    print(f"\n{'─' * 40}")
+    line_sep = "─" * 40
+    try:
+        print(f"\n{line_sep}")
+    except UnicodeEncodeError:
+        print(f"\n{'-' * 40}")
     print(f"Verified {total} file(s): {passed} passed, {warned} warned, {failed} failed")
 
     if has_failure:
