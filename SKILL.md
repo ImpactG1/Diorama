@@ -32,25 +32,29 @@ Every asset generated later must share one identity, or the composite will look 
 - **Palette** — 4–6 named hex values with usage notes, not "dark and moody."
 - **Lighting rule** — one sentence, reused **verbatim** in every asset prompt. This is the single highest-leverage lock. Example: *"Warm tungsten key light from screen-left, deep vignette, fine film grain."* Without a shared lighting rule, independently generated assets never read as one scene.
 - **Render medium** — one consistent style, e.g. "gouache illustration with visible brush texture" vs. "flat vector" vs. "grainy photobash." Never mix mediums across layers.
+- **Typography system** — 3-tier locked font stack: (1) Display face with strong era/theme personality, (2) Editorial/body face for long-form legibility, (3) Technical/archival face (mono or small-caps) for dates, docket stamps, and metadata. Never default to generic unstyled system fonts or Inter.
+- **Voice & copywriting persona** — define the in-world artifact (e.g. "classified 1928 Bureau dossier" or "bootleg speakeasy ledger"). Ban marketing fluff, generic AI tricolons ("Power. Loyalty. Respect."), and fake profundity ("Every empire starts with a single deal").
 - **Motion personality** — 2–3 words (e.g. "slow, heavy, deliberate" vs. "snappy, playful") that govern Step 4's animation choices.
 
 See `examples/mafia-landing/art-bible.md` for a complete example.
 
 ## Step 1 — Decompose the scene into a component manifest
 
-Do not ask for "a hero image." Write out a manifest of independent layers, each with a name, a role, its z-index, and whether it needs a transparent background. A typical hero scene manifest:
+Do not ask for "a hero image." Write out a manifest of independent layers, each with a name, a role, its z-index, and whether it needs a transparent background. Notice that typography is decomposed across depth planes rather than slapped on top as a flat sticker:
 
 | Layer | Role | Transparent? | z-index |
 |---|---|---|---|
 | Background plate | Environment, no characters | No (base) | 0 |
 | Midground props | Supporting objects (vehicles, furniture) | Yes | 10 |
+| **Back typography (Masthead)** | Giant display title / watermark behind character | DOM (text) | 15 |
 | Hero character cutout | The focal figure | Yes | 20 |
 | Foreground props | Frame-edge objects, bottom of viewport | Yes | 30 |
 | Texture overlay | Grain / smoke / light-leak (CSS blend layer) | Yes | 40 |
+| **Front typography & UI** | Lede, docket stamps, ledger items, interactive CTAs | DOM (interactive) | 50 |
 | Custom icon set | Nav icons, button glyphs, in the SAME render medium | Yes | — |
 | Prop/motif set | Bullet casings, playing cards — for `<li>` markers, dividers | Yes | — |
 
-The prop/icon layer is the highest-leverage, most-skipped step: swapping default bullets and default icon libraries for theme-consistent motifs is often the single biggest tell between "designed" and "AI slop," and it's cheap once the art bible is locked.
+The prop/icon layer and typographic depth separation are the highest-leverage steps: swapping default bullets and default icon libraries for theme-consistent motifs, and interleaving typography behind the hero figure, immediately breaks the "AI-generated billboard" feel.
 
 See `examples/mafia-landing/manifest.md` for a complete example.
 
@@ -108,15 +112,20 @@ For a full scene with 6+ layers, batch the generation-key-verify cycle rather th
 
 ## Step 4 — Composite as real HTML/CSS, not as one flat image
 
-Reference `references/composition-patterns.md` for all code patterns. The essential rules:
+Reference `references/composition-patterns.md` and `references/spatial-layouts.md` for all code patterns. The essential rules:
 
-- **Each transparent layer is an actual positioned element** (`<img>` or CSS `background-image`) inside a positioned scene container, at the z-index from the manifest. Never flatten the scene back into a single exported image.
+- **Ban "Centering Disease"**: Never default to centering all text over the center of the viewport (`align-items: center; text-align: center`). Choose an intentional **Spatial Composition Archetype**:
+  - *Asymmetric Rule-of-Thirds Split*: Character anchored to stage-right (cols 7–12), text locked to stage-left (cols 1–6).
+  - *Cinematic Masthead*: Giant display title interleaved behind character (z-index 15), interactive elements at bottom corners.
+  - *Peripheral Frame*: Diorama center is unobstructed; metadata, tickers, and CTAs flank the margins.
+- **Interleave typography in depth**: Place the giant masthead/watermark title at `z-index: 15` *behind* the hero character cutout (`z-index: 20`). Place actionable content (lede, CTAs, archival stamps) at `z-index: 50` *in front*.
+- **Directional Atmospheric Scrims**: Do NOT use fuzzy amateur `text-shadow` blurs. Use directional gradient masks (`linear-gradient(to right, ...)`), tactile backing cards, or targeted backdrop filters behind text zones to guarantee contrast over painted art.
 - **Text is ALWAYS in real DOM nodes** — never baked into a generated image. This is non-negotiable for accessibility, localization, and SEO.
 - **Depth comes from parallax**: a small differential transform per layer on scroll or pointer-move, background slowest, foreground fastest. Apply this ONCE as the page's one orchestrated motion moment.
 - **Use the custom motif set** for list markers (`list-style-image`), button icons, and dividers — never default bullets or stock icon libraries on a themed page.
 - **Texture overlays** use `mix-blend-mode` (overlay, screen, multiply, or soft-light depending on texture type) — see the blend mode table in `references/composition-patterns.md`.
 - **Respect `prefers-reduced-motion`** — disable parallax and ambient animations.
-- **Responsive**: layered scenes break first on mobile. Hide least-important layers on narrow viewports, disable parallax on touch screens. See the responsive strategy in `references/composition-patterns.md`.
+- **Responsive**: layered scenes break first on mobile. Re-stack asymmetric layouts into a vertical editorial sequence, hide non-essential props, and disable parallax on touch screens.
 
 See `examples/mafia-landing/index.html` and `examples/mafia-landing/styles.css` for a complete implementation.
 
@@ -137,9 +146,14 @@ Match easing to the Art Bible's motion personality:
 - "Snappy, precise" → `cubic-bezier(0.33, 1, 0.68, 1)`
 - "Dramatic, theatrical" → `cubic-bezier(0.7, 0, 0.3, 1)`
 
-## Step 6 — Run the anti-slop checklist, then self-critique
+## Step 6 — Run the anti-slop checklist & automated layout linter
 
-Walk the finished page against `references/anti-slop-checklist.md` and flag any match. Then apply one round of **"remove one accessory"**: find the single most attention-grabbing element, make sure everything else is quiet around it, and cut anything decorative that isn't doing a job for this specific brief.
+1. Run the automated code linter to catch centering reflexes, missing scrims, and generic copy:
+   ```
+   python scripts/lint_anti_slop.py index.html styles.css
+   ```
+2. Walk the finished page against `references/anti-slop-checklist.md` and flag any match.
+3. Apply one round of **"remove one accessory"**: find the single most attention-grabbing element, make sure everything else is quiet around it, and cut anything decorative that isn't doing a job for this specific brief.
 
 **Final gut check**: Could this exact page have come out of the same prompt for a completely different theme, with only the words swapped? If yes, the design leaned on defaults — go back to Step 0 and tighten the Art Bible.
 
@@ -154,11 +168,13 @@ Place this folder at `.agents/skills/diorama/` (workspace-scoped) or `~/.gemini/
 ### Scripts
 - `scripts/chroma_key.py` — Cross-platform Python chroma key (requires Pillow). Supports green-screen keying and white/black difference matting fallback.
 - `scripts/verify_alpha.py` — Batch alpha verification for generated assets. Run before compositing.
+- `scripts/lint_anti_slop.py` — Static layout and typography linter for HTML/CSS to catch AI-slop design reflexes.
 - `scripts/chroma_key.sh` — Bash/ffmpeg/ImageMagick alternative for Linux/macOS environments.
 
 ### References (progressive disclosure — the agent reads these only when needed)
 - `references/prompt-patterns.md` — Structured prompt templates for each layer type (background, character, props, textures, icons).
-- `references/composition-patterns.md` — HTML/CSS code patterns for scene containers, parallax, blend modes, custom motifs, responsive strategy.
+- `references/spatial-layouts.md` — 12-column grid archetypes, asymmetric alignment rules, and depth-interleaved typography.
+- `references/composition-patterns.md` — HTML/CSS code patterns for scene containers, parallax, blend modes, atmospheric scrims, custom motifs.
 - `references/animation-playbook.md` — Motion design patterns: entrance stagger, ambient drift, scroll reveals, easing reference.
 - `references/anti-slop-checklist.md` — Concrete tells to check every output against before calling it done.
 

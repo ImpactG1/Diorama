@@ -4,12 +4,16 @@ These are the concrete code patterns the agent should use when assembling genera
 
 ---
 
-## 1. Scene Container
+## 1. Scene Container & Layer Stacking
 
-The foundation of every Diorama composition. All layers stack inside one positioned container.
+The foundation of every Diorama composition. All layers stack inside one positioned container. 
+**Crucial Anti-Slop Rule**: Typography is NEVER dumped into a single centered block on top of the hero image. Typography is split across depth planes:
+- `z-index: 15`: **Back Typography (Masthead/Watermark)** — sits *behind* the hero character cutout (`z-index: 20`), allowing the character to occlude the lettering (the classic *TIME* or *Vogue* magazine effect).
+- `z-index: 5`: **Atmospheric Scrim** — a directional gradient mask that preserves contrast behind text without muddying the character art.
+- `z-index: 50`: **Front UI & Copy** — accessible lede, metadata stamps, docket numbers, and interactive CTA buttons.
 
 ```html
-<section class="diorama-scene" id="hero-scene" aria-label="Hero scene">
+<section class="diorama-scene archetype-split" id="hero-scene" aria-label="Hero scene">
   <!-- z-index 0: Background plate (full bleed, no transparency) -->
   <div class="diorama-layer" data-depth="0" style="--z: 0">
     <img src="assets/background-plate.png"
@@ -19,6 +23,9 @@ The foundation of every Diorama composition. All layers stack inside one positio
          class="diorama-bg">
   </div>
 
+  <!-- z-index 5: Directional Atmospheric Scrim (protects text zone contrast) -->
+  <div class="diorama-scrim diorama-scrim--left" style="--z: 5" aria-hidden="true"></div>
+
   <!-- z-index 10: Midground props -->
   <div class="diorama-layer" data-depth="0.3" style="--z: 10">
     <img src="assets/midground-props.png"
@@ -27,15 +34,20 @@ The foundation of every Diorama composition. All layers stack inside one positio
          loading="eager">
   </div>
 
-  <!-- z-index 20: Hero character -->
-  <div class="diorama-layer" data-depth="0.6" style="--z: 20">
+  <!-- z-index 15: Back typography (Interleaved Masthead behind character) -->
+  <div class="diorama-layer diorama-masthead-back" data-depth="0.15" style="--z: 15">
+    <span class="masthead-watermark" aria-hidden="true">THE FAMILY</span>
+  </div>
+
+  <!-- z-index 20: Hero character cutout (overlaps masthead) -->
+  <div class="diorama-layer diorama-layer--hero" data-depth="0.5" style="--z: 20">
     <img src="assets/hero-character.png"
-         alt="A figure in a fedora and long coat, standing under a streetlight"
+         alt="Don Vittorio standing under tungsten streetlamp"
          loading="eager">
   </div>
 
   <!-- z-index 30: Foreground props (decorative) -->
-  <div class="diorama-layer" data-depth="0.9" style="--z: 30">
+  <div class="diorama-layer diorama-layer--fg" data-depth="0.8" style="--z: 30">
     <img src="assets/foreground-props.png"
          alt=""
          role="presentation"
@@ -50,24 +62,36 @@ The foundation of every Diorama composition. All layers stack inside one positio
          loading="lazy">
   </div>
 
-  <!-- Text content sits ON TOP of the scene, in the DOM, accessible -->
-  <div class="diorama-content" style="--z: 50">
-    <h1>The Family</h1>
-    <p class="tagline">Every empire starts with a single deal.</p>
-    <a href="#story" class="cta-button">Enter the Speakeasy</a>
+  <!-- z-index 50: Interactive UI & Editorial Content (Asymmetric 12-col grid) -->
+  <div class="diorama-grid-content" style="--z: 50">
+    <div class="editorial-col">
+      <div class="archival-kicker">
+        <span class="stamp-tag">DOCKET #1927-NY</span>
+        <span class="stamp-date">OCTOBER 14, 1927</span>
+      </div>
+      <h1 class="editorial-heading">The Five Points Syndicate</h1>
+      <p class="editorial-lede">
+        Operating beyond municipal jurisdiction since the Volstead Act. Every cask cataloged, every debt honored, no testimony given.
+      </p>
+      <div class="editorial-cta-row">
+        <a href="#ledger" class="cta-button">Open The Ledger</a>
+        <a href="#code" class="secondary-link">The Family Code</a>
+      </div>
+    </div>
   </div>
 </section>
 ```
 
 ### Key rules:
 - **Text is NEVER baked into images** — it's real DOM nodes for accessibility, localization, and SEO
+- **Never center-align all text over a centered character** — use an asymmetric grid (e.g. stage-left text, stage-right character) or depth-interleaving
 - **Decorative layers get `role="presentation"` and empty `alt`** — screen readers skip them
 - **The hero character gets a real `alt` text** — it's meaningful content
 - **`data-depth`** drives parallax intensity: 0 = no movement, 1 = maximum movement
 
 ---
 
-## 2. Core CSS — Scene Stacking
+## 2. Core CSS — Stacking, Asymmetric Grids & Scrims
 
 ```css
 /* ========================================
@@ -79,7 +103,6 @@ The foundation of every Diorama composition. All layers stack inside one positio
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
-  /* Contain the stacking context */
   isolation: isolate;
 }
 
@@ -87,11 +110,7 @@ The foundation of every Diorama composition. All layers stack inside one positio
   position: absolute;
   inset: 0;
   z-index: var(--z, 0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none; /* Don't block clicks through to content */
-  /* GPU-accelerated for smooth parallax */
+  pointer-events: none;
   will-change: transform;
 }
 
@@ -99,33 +118,71 @@ The foundation of every Diorama composition. All layers stack inside one positio
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Prevent image dragging */
   user-select: none;
   -webkit-user-drag: none;
 }
 
-/* Background plate: covers entire scene, no transparency */
-.diorama-bg {
-  object-fit: cover;
+/* Character layer positioning (stage right or centered) */
+.diorama-layer--hero img {
+  position: absolute;
+  right: 5%;
+  bottom: 0;
+  width: auto;
+  height: 90vh;
+  object-fit: contain;
 }
 
-/* Texture overlay: blend into the scene */
-.diorama-texture {
-  mix-blend-mode: overlay;
-  opacity: 0.25;
+/* Directional Scrim: protects text contrast without muddy drop-shadows */
+.diorama-scrim--left {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 14, 26, 0.95) 0%,
+    rgba(10, 14, 26, 0.8) 35%,
+    rgba(10, 14, 26, 0.25) 60%,
+    transparent 80%
+  );
+  pointer-events: none;
 }
 
-/* Content layer: sits on top, receives pointer events */
-.diorama-content {
-  position: relative;
-  z-index: var(--z, 50);
+/* Interleaved Back Typography (z: 15) */
+.diorama-masthead-back {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 2rem;
-  text-align: center;
+  overflow: hidden;
+}
+
+.masthead-watermark {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 16vw, 20rem);
+  font-weight: 900;
+  color: var(--ivory);
+  opacity: 0.15;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Asymmetric 12-Column Grid for Content (z: 50) */
+.diorama-grid-content {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z, 50);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 6rem 2.5rem 3rem;
+  align-items: center;
+  pointer-events: none;
+}
+
+.editorial-col {
+  grid-column: 1 / span 6; /* Stage-left: cols 1 to 6 */
+  text-align: left;
   pointer-events: auto;
 }
 ```

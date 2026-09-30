@@ -3,6 +3,8 @@
 Run the finished page against every line below. Anything that matches is a default, not a choice made for this brief — revise it, unless the brief itself explicitly asked for that exact look.
 
 ## Layout & structure
+- [ ] **The Centering Disease**: Defaulting to `align-items: center; justify-content: center; text-align: center;` on the hero and every section below it, instead of choosing an asymmetric spatial grid archetype.
+- [ ] **Text-Art Collision**: Headline or hero copy centered directly on top of the hero character's face, torso, or primary focal point.
 - [ ] Content chopped into identical rounded cards with one border-radius applied regardless of hierarchy, and the same soft grey shadow under each.
 - [ ] Numbered markers (01 / 02 / 03) on content that isn't actually a sequence or timeline.
 - [ ] A tracked-out ALL-CAPS "eyebrow" label sitting above every heading whether or not it adds information.
@@ -13,14 +15,16 @@ Run the finished page against every line below. Anything that matches is a defau
 - [ ] A warm cream background (near `#F4F1EA`) paired with a high-contrast serif and a terracotta/clay accent (near `#D97757`).
 - [ ] A near-black background with one bright acid-green or vermilion accent, applied regardless of subject.
 - [ ] Tinted near-black (`#0B0B0B`, `#111`) standing in for true black everywhere.
-- [ ] The default system-font stack (Inter / system-ui) used because no one chose a typeface on purpose.
+- [ ] The default system-font stack (Inter / system-ui / Roboto) used because no one chose a typeface on purpose.
+- [ ] No 3-tier typographic system (failing to lock Display, Editorial/Body, and Archival/Metadata tiers in the Art Bible).
 - [ ] A monospace face applied to small data labels out of habit rather than because the content is data.
 - [ ] Accenting a single word or phrase in a headline (one word bold/italic/colored) as the only typographic idea in the page.
+- [ ] Relying on heavy, fuzzy `text-shadow` blurs (e.g. `text-shadow: 0 4px 30px #000`) for legibility instead of directional atmospheric scrims or tactile backing cards.
 
 ## Imagery & components
 - [ ] One flat AI-generated hero image standing in for the entire visual identity, with no separately directable layers behind it.
 - [ ] Default icon library glyphs (lucide/heroicons/feather) used on a page with a strong theme, instead of a custom icon set in the same render medium as the rest of the scene.
-- [ ] Default `<ul>` bullets or generic dot markers where a theme-specific motif was available and cheap to generate.
+- [ ] Default `<ul>` bullets or generic dot markers where a theme-specific motif or ledger table was available and cheap to generate.
 - [ ] Any generated asset whose lighting, palette, or render medium doesn't match the rest of the scene — a sign the Art Bible lock wasn't applied consistently.
 - [ ] A "transparent" asset that was never actually verified to have a real alpha channel before being composited.
 
@@ -30,6 +34,7 @@ Run the finished page against every line below. Anything that matches is a defau
 - [ ] No single orchestrated "moment" — the page has scattered small effects but no one deliberate highlight.
 
 ## Layer composition (Diorama-specific)
+- [ ] **The Flat Sticker Trap**: All typography placed at `z-index: 50` on top of every image layer, missing the opportunity to interleave a giant masthead/watermark title at `z-index: 15` *behind* the hero cutout.
 - [ ] Any generated asset composited into the page without running `verify_alpha.py` first — an unverified "transparent" PNG from a model is almost certainly a painted checkerboard, not real alpha.
 - [ ] Layers whose lighting direction doesn't match — each asset was generated with a different prompt instead of locking the Art Bible lighting sentence.
 - [ ] Layers whose render medium doesn't match — one layer looks like a vector illustration while another looks like a photograph, because the Art Bible medium wasn't pasted verbatim into every prompt.
@@ -40,8 +45,11 @@ Run the finished page against every line below. Anything that matches is a defau
 - [ ] The scene was flattened back into a single exported image after compositing — defeating the entire purpose of layer-based composition (responsiveness, editability, accessibility).
 - [ ] Text baked into a generated image instead of placed as a real DOM node — kills accessibility, localization, and the ability to change copy without re-generating the entire asset.
 
-## Copy
-- [ ] Placeholder or generic copy that could belong to any brief in this category, rather than copy grounded in this specific brand/world/content.
+## Copywriting & voice
+- [ ] **The AI Tricolon**: Buzzword triplets separated by periods or slashes ("Honor. Loyalty. Family." or "Speed. Scale. Simplicity.").
+- [ ] **Fake Profundity / Movie Clichés**: Melodramatic truisms ("Every empire starts with a single deal", "Blood is thicker than whiskey", "Where shadow meets steel").
+- [ ] **SaaS Pitch Reflex**: Generic modern tech labels ("Get Started", "Learn More", "Features", "Why Choose Us") on a themed historical or fantasy page.
+- [ ] Lack of in-world artifact framing (writing as an advertising agency instead of an authentic surveillance log, speakeasy ledger, field dispatch, or archival record).
 - [ ] Passive or system-centric labels ("Submit," "webhook config") instead of active, user-facing language ("Save changes").
 
 ## Final gut check

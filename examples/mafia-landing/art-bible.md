@@ -29,6 +29,24 @@ This exact sentence is appended to every asset prompt.
 
 > **Painterly digital illustration with visible brush strokes, reminiscent of noir movie posters from the 1940s. Rich, saturated shadows with slightly exaggerated contrast. Not photorealistic, not flat vector — painterly.**
 
+## Typography System (3-Tier Lock)
+
+| Tier | Face | Google Font / Fallback | Role & Settings |
+|---|---|---|---|
+| **Tier 1: Display** | `Playfair Display` | 900 weight, serif | Hero masthead, section heads. Tight tracking: `-0.03em`. |
+| **Tier 2: Editorial / Body** | `Libre Baskerville` | 400 & 700, serif | Narrative copy, rules text, lede. Line-height: `1.75`. |
+| **Tier 3: Archival / Meta** | `Courier Prime` | 400 & 700, monospace | Docket numbers, date stamps, ledger tags. Tracking: `+0.12em`. |
+
+## Copywriting Persona & Voice Lock
+
+- **In-World Artifact**: Declassified Department of Justice surveillance dossier (October 1927) cross-referenced with unredacted syndicate ledger entries.
+- **Tone**: Matter-of-fact, bureaucratic, clinical dread, period-accurate vernacular.
+- **Banned Tropes**:
+  - NO marketing tricolons ("Loyalty. Honor. Respect.")
+  - NO movie aphorisms ("Every empire starts with...", "Blood is thicker than...")
+  - NO generic SaaS calls-to-action ("Get Started", "Learn More")
+- **Approved Terminology**: *Volstead violation, Five Points dispatch, unredacted folio, ledger settlement, district custodian, sworn covenant*.
+
 ## Motion Personality
 
 **Slow, heavy, deliberate.** Like smoke settling in a still room. Nothing snappy, nothing bouncy. Easing: `cubic-bezier(0.16, 1, 0.3, 1)`.

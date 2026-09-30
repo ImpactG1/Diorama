@@ -1,11 +1,7 @@
 /* =============================================
-   DIORAMA EXAMPLE — 1920s Mafia Speakeasy
+   DIORAMA REFERENCE IMPLEMENTATION — 1920s Mafia Speakeasy
    Art Bible: see art-bible.md
-   =============================================
-
-   This stylesheet demonstrates every Diorama composition
-   pattern. In production, the placeholder styles would be
-   replaced by actual generated assets from the pipeline.
+   Layout Archetype: Asymmetric Rule-of-Thirds + Depth-Interleaved Masthead
    ============================================= */
 
 /* ---- CSS Custom Properties (from Art Bible) ---- */
@@ -14,15 +10,18 @@
   --midnight:     #0A0E1A;
   --charcoal:     #1C2333;
   --brass:        #D4A854;
+  --brass-dim:    rgba(212, 168, 84, 0.25);
   --ivory:        #F5E6C8;
   --crimson:      #8B1A1A;
+  --crimson-glow: #A52020;
   --fog:          #4A5568;
 
-  /* Typography */
-  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  /* 3-Tier Locked Typography System */
+  --font-display: 'Playfair Display', Georgia, serif;
   --font-body:    'Libre Baskerville', Georgia, serif;
+  --font-meta:    'Courier Prime', 'Courier New', monospace;
 
-  /* Motion (Art Bible: "slow, heavy, deliberate") */
+  /* Motion Personality: "slow, heavy, deliberate" */
   --ease-heavy:   cubic-bezier(0.16, 1, 0.3, 1);
   --motion-speed: 1;
   --motion-distance: 1;
@@ -55,8 +54,7 @@ body {
 }
 
 /* ================================================
-   NAVIGATION
-   Uses custom generated icons, NOT default icon sets
+   NAVIGATION — Editorial & Archival Classification
    ================================================ */
 .nav {
   position: fixed;
@@ -67,37 +65,53 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2.5rem;
+  padding: 1.25rem 3.5rem;
   background: linear-gradient(to bottom, rgba(10, 14, 26, 0.95), rgba(10, 14, 26, 0));
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(212, 168, 84, 0.12);
+}
+
+.nav-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
 }
 
 .nav-logo {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 900;
   color: var(--brass);
   text-decoration: none;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
+}
+
+.nav-docket-badge {
+  font-family: var(--font-meta);
+  font-size: 0.75rem;
+  color: var(--fog);
+  border: 1px solid var(--brass-dim);
+  padding: 0.15rem 0.6rem;
+  letter-spacing: 0.12em;
 }
 
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 2rem;
+  gap: 2.25rem;
 }
 
 .nav-links a {
   color: var(--ivory);
   text-decoration: none;
-  font-size: 0.9rem;
-  letter-spacing: 0.03em;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  opacity: 0.75;
-  transition: opacity 0.3s ease;
+  opacity: 0.8;
+  transition: opacity 0.3s ease, color 0.3s ease;
 }
 
 .nav-links a:hover,
@@ -106,12 +120,10 @@ body {
   color: var(--brass);
 }
 
-/* Custom nav icons — in production, these use generated assets */
 .nav-icon {
   display: inline-block;
-  width: 1.25rem;
-  height: 1.25rem;
-  /* In production: background-image: url('assets/icons/xxx.png'); */
+  width: 1.1rem;
+  height: 1.1rem;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -133,60 +145,136 @@ body {
   position: absolute;
   inset: 0;
   z-index: var(--z, 0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   pointer-events: none;
   will-change: transform;
-  /* Entrance animation base state */
+  /* Entrance base state */
   opacity: 0;
-  transform: scale(1.05);
+  transform: scale(1.03);
   transition:
-    opacity 0.8s var(--ease-heavy),
-    transform 0.8s var(--ease-heavy);
+    opacity 0.9s var(--ease-heavy),
+    transform 0.9s var(--ease-heavy);
 }
 
-/* Stagger delays by layer depth */
-.diorama-layer[style*="--z: 0"]  { transition-delay: 0s;    }
+/* Stagger delays by depth */
+.diorama-layer[style*="--z: 0"]  { transition-delay: 0s; }
 .diorama-layer[style*="--z: 10"] { transition-delay: 0.15s; }
-.diorama-layer[style*="--z: 20"] { transition-delay: 0.3s;  }
-.diorama-layer[style*="--z: 30"] { transition-delay: 0.45s; }
-.diorama-layer[style*="--z: 40"] { transition-delay: 0.6s;  }
-.diorama-layer[style*="--z: 41"] { transition-delay: 0.7s;  }
+.diorama-layer[style*="--z: 15"] { transition-delay: 0.25s; }
+.diorama-layer[style*="--z: 20"] { transition-delay: 0.4s; }
+.diorama-layer[style*="--z: 30"] { transition-delay: 0.55s; }
+.diorama-layer[style*="--z: 40"] { transition-delay: 0.7s; }
 
-/* Revealed state */
 .diorama-scene.is-revealed .diorama-layer {
   opacity: 1;
   transform: none;
 }
 
-/* Content layer */
-.diorama-content {
+/* Base background */
+.placeholder-bg {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--midnight) 0%,
+    var(--charcoal) 30%,
+    #0E1524 50%,
+    var(--charcoal) 75%,
+    var(--midnight) 100%
+  );
   position: relative;
-  z-index: var(--z, 50);
+}
+
+.placeholder-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 70% 45%,
+    rgba(212, 168, 84, 0.09) 0%,
+    transparent 55%
+  );
+}
+
+.placeholder-layer {
+  width: 100%;
+  height: 100%;
+}
+
+.placeholder-midground {
+  background:
+    radial-gradient(ellipse at 80% 75%, rgba(28, 35, 51, 0.7) 0%, transparent 25%),
+    radial-gradient(ellipse at 40% 85%, rgba(28, 35, 51, 0.4) 0%, transparent 20%);
+}
+
+/* Directional Atmospheric Scrim (z: 5) */
+.diorama-scrim--stage-left {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z, 5);
+  background: linear-gradient(
+    90deg,
+    rgba(10, 14, 26, 0.97) 0%,
+    rgba(10, 14, 26, 0.88) 32%,
+    rgba(10, 14, 26, 0.45) 55%,
+    transparent 78%
+  );
+  pointer-events: none;
+}
+
+/* Interleaved Back Masthead (z: 15) — behind character */
+.diorama-masthead-back {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 2rem;
-  text-align: center;
-  pointer-events: auto;
-  /* Entrance animation */
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
-  transition-delay: 0.8s;
+  justify-content: flex-end;
+  padding-right: 2%;
+  overflow: hidden;
 }
 
-.diorama-scene.is-revealed .diorama-content {
-  opacity: 1;
-  transform: none;
+.masthead-watermark {
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 18vw, 21rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: var(--ivory);
+  opacity: 0.12;
+  line-height: 0.8;
+  user-select: none;
+  white-space: nowrap;
 }
 
-/* Texture overlay blend modes */
+/* Hero Character (z: 20) — anchored stage-right, overlapping masthead */
+.diorama-layer--hero {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.placeholder-character {
+  width: 44vw;
+  max-width: 620px;
+  height: 88vh;
+  margin-right: 4%;
+  background: radial-gradient(
+    ellipse at 50% 48%,
+    rgba(10, 14, 26, 0.7) 0%,
+    transparent 55%
+  );
+  border-bottom: 2px solid rgba(212, 168, 84, 0.35);
+}
+
+.diorama-layer--fg {
+  display: flex;
+  align-items: flex-end;
+}
+
+.placeholder-foreground {
+  background: linear-gradient(
+    to top,
+    rgba(10, 14, 26, 0.8) 0%,
+    transparent 28%
+  );
+}
+
+/* Textures */
 .diorama-texture {
   pointer-events: none;
 }
@@ -198,7 +286,7 @@ body {
 }
 
 .diorama-scene.is-revealed .diorama-texture--smoke {
-  opacity: 0.3;
+  opacity: 0.28;
 }
 
 .diorama-texture--grain {
@@ -208,10 +296,19 @@ body {
 }
 
 .diorama-scene.is-revealed .diorama-texture--grain {
-  opacity: 0.15;
+  opacity: 0.16;
 }
 
-/* Ambient drift — smoke drifts slowly (ONE motion moment) */
+.placeholder-smoke {
+  background:
+    radial-gradient(ellipse at 75% 40%, rgba(245, 230, 200, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse at 35% 65%, rgba(245, 230, 200, 0.03) 0%, transparent 35%);
+}
+
+.placeholder-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
 .diorama-ambient-drift {
   animation: ambient-drift calc(30s * var(--motion-speed)) linear infinite;
 }
@@ -228,122 +325,160 @@ body {
   }
 }
 
-/* ================================================
-   PLACEHOLDER STYLES (replace with real assets)
-   These simulate the visual layers for the example.
-   In production, each placeholder is an <img> tag
-   pointing to a chroma-keyed transparent PNG.
-   ================================================ */
-.placeholder-bg {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    var(--midnight) 0%,
-    var(--charcoal) 30%,
-    #0F1623 50%,
-    var(--charcoal) 70%,
-    var(--midnight) 100%
-  );
-  /* Simulate foggy street with radial overlay */
-  position: relative;
+/* Left Margin Vertical Spine Runner */
+.diorama-spine-runner {
+  position: absolute;
+  left: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: center center;
+  font-family: var(--font-meta);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--fog);
+  opacity: 0.45;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
-.placeholder-bg::after {
-  content: '';
+/* ================================================
+   HERO EDITORIAL CONTENT (z: 50) — Asymmetric 12-Col Grid
+   ================================================ */
+.diorama-grid-content {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse at 30% 50%,
-    rgba(212, 168, 84, 0.08) 0%,
-    transparent 50%
-  );
+  z-index: var(--z, 50);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 6.5rem 3.5rem 3rem;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(calc(20px * var(--motion-distance)));
+  transition:
+    opacity 0.7s var(--ease-heavy),
+    transform 0.7s var(--ease-heavy);
+  transition-delay: 0.6s;
 }
 
-.placeholder-layer {
-  width: 100%;
-  height: 100%;
+.diorama-scene.is-revealed .diorama-grid-content {
+  opacity: 1;
+  transform: none;
 }
 
-.placeholder-midground {
-  /* Simulates car/lamp silhouettes */
-  background:
-    radial-gradient(ellipse at 20% 80%, rgba(28, 35, 51, 0.6) 0%, transparent 20%),
-    radial-gradient(ellipse at 75% 75%, rgba(28, 35, 51, 0.4) 0%, transparent 15%);
+.editorial-col {
+  grid-column: 1 / span 7;
+  text-align: left;
+  pointer-events: auto;
+  max-width: 38rem;
 }
 
-.placeholder-character {
-  /* Simulates character silhouette in center */
-  background: radial-gradient(
-    ellipse at 50% 55%,
-    rgba(10, 14, 26, 0.5) 0%,
-    transparent 25%
-  );
+.archival-kicker {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
 }
 
-.placeholder-foreground {
-  /* Simulates foreground objects at bottom */
-  background: linear-gradient(
-    to top,
-    rgba(10, 14, 26, 0.7) 0%,
-    transparent 30%
-  );
+.stamp-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border: 1.5px solid var(--crimson);
+  color: #E25555;
+  font-family: var(--font-meta);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
 }
 
-.placeholder-smoke {
-  background:
-    radial-gradient(ellipse at 30% 40%, rgba(245, 230, 200, 0.05) 0%, transparent 40%),
-    radial-gradient(ellipse at 70% 60%, rgba(245, 230, 200, 0.03) 0%, transparent 35%);
+.kicker-date {
+  font-family: var(--font-meta);
+  font-size: 0.8rem;
+  color: var(--fog);
+  letter-spacing: 0.12em;
 }
 
-.placeholder-grain {
-  /* Simulated grain via CSS noise */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-}
-
-/* ================================================
-   HERO CONTENT
-   ================================================ */
 .hero-title {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 8vw, 7rem);
+  font-size: clamp(2.75rem, 5.5vw, 5rem);
   font-weight: 900;
   color: var(--ivory);
-  letter-spacing: 0.04em;
+  letter-spacing: -0.02em;
   line-height: 1.1;
-  text-shadow: 0 4px 30px rgba(10, 14, 26, 0.8);
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
-.hero-tagline {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
+.hero-lede {
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  color: var(--ivory);
+  opacity: 0.9;
+  line-height: 1.75;
+  margin-bottom: 2rem;
+}
+
+.editorial-meta-strip {
+  display: flex;
+  gap: 2.5rem;
+  padding: 1.25rem 0;
+  margin-bottom: 2.25rem;
+  border-top: 1px solid var(--brass-dim);
+  border-bottom: 1px solid var(--brass-dim);
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.meta-label {
+  font-family: var(--font-meta);
+  font-size: 0.7rem;
+  color: var(--fog);
+  letter-spacing: 0.12em;
+}
+
+.meta-val {
+  font-family: var(--font-meta);
+  font-size: 0.9rem;
   color: var(--brass);
-  margin-bottom: 2.5rem;
-  letter-spacing: 0.05em;
 }
 
-/* CTA button — uses custom brass-knuckles icon, not a default arrow */
+.meta-val.status-alert {
+  color: #E25555;
+  font-weight: 700;
+}
+
+.cta-group {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .cta-button {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 1rem 2.5rem;
+  padding: 1rem 2.25rem;
   background: var(--crimson);
   color: var(--ivory);
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   text-decoration: none;
-  letter-spacing: 0.06em;
-  border: 1px solid rgba(212, 168, 84, 0.3);
+  letter-spacing: 0.05em;
+  border: 1px solid var(--brass-dim);
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .cta-button:hover,
 .cta-button:focus-visible {
-  background: #A52020;
+  background: var(--crimson-glow);
   border-color: var(--brass);
 }
 
@@ -352,129 +487,256 @@ body {
   outline-offset: 3px;
 }
 
-/* Custom CTA icon — in production: generated brass-knuckles motif */
 .cta-icon {
   display: inline-block;
-  width: 1.25rem;
-  height: 1.25rem;
-  /* In production: background-image: url('assets/motifs/brass-knuckles.png'); */
+  width: 1.15rem;
+  height: 1.15rem;
   background-size: contain;
   background-repeat: no-repeat;
 }
 
+.secondary-btn {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--brass);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--brass-dim);
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.secondary-btn:hover,
+.secondary-btn:focus-visible {
+  color: var(--ivory);
+  border-color: var(--ivory);
+}
+
 /* ================================================
-   SECTIONS
+   SECTIONS — Left-Aligned Editorial Architecture
    ================================================ */
 .section {
-  padding: 6rem 2rem;
+  padding: 7rem 3.5rem;
+  border-top: 1px solid rgba(212, 168, 84, 0.12);
 }
 
 .section-inner {
-  max-width: 48rem;
+  max-width: 1200px;
   margin: 0 auto;
+}
+
+.section-header-asymmetric {
+  text-align: left;
+  max-width: 44rem;
+  margin-bottom: 3.5rem;
+}
+
+.section-eyebrow {
+  display: block;
+  font-family: var(--font-meta);
+  font-size: 0.75rem;
+  color: var(--brass);
+  letter-spacing: 0.18em;
+  margin-bottom: 0.75rem;
 }
 
 .section-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(2rem, 4vw, 3.25rem);
   font-weight: 900;
   color: var(--ivory);
-  text-align: center;
+  line-height: 1.2;
   margin-bottom: 1rem;
 }
 
-/* Custom divider — uses generated Ace of Spades motif */
-.diorama-divider {
-  border: none;
-  height: 2.5rem;
-  /* In production: background: url('assets/motifs/ace-of-spades.png') center/contain no-repeat; */
-  background: radial-gradient(circle at center, var(--brass) 2px, transparent 2px);
-  background-size: 12px 12px;
-  background-position: center;
-  margin: 1.5rem auto 2.5rem;
-  max-width: 8rem;
-  opacity: 0.5;
-}
-
-/* Custom list — uses bullet-casing motifs instead of default markers */
-.diorama-list {
-  list-style: none;
-  padding-left: 0;
-}
-
-.diorama-list li {
-  position: relative;
-  padding-left: 2.5rem;
-  margin-bottom: 1.25rem;
-  font-size: 1.1rem;
+.section-subtext {
+  font-size: 1.05rem;
+  color: var(--fog);
   line-height: 1.7;
-  color: var(--ivory);
-}
-
-.diorama-list li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.4em;
-  width: 1.25rem;
-  height: 1.25rem;
-  /* In production: background: url('assets/motifs/bullet-casing.png') center/contain no-repeat; */
-  /* Placeholder: a brass dot */
-  background: var(--brass);
-  border-radius: 50% 50% 30% 30%;
-  opacity: 0.7;
 }
 
 /* ================================================
-   CHARACTER CARDS
+   TABULAR LEDGER (The Covenants)
    ================================================ */
-.character-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: 2.5rem;
-  margin-top: 2rem;
+.ledger-container {
+  overflow-x: auto;
+  border: 1px solid var(--brass-dim);
+  background: rgba(28, 35, 51, 0.4);
+  backdrop-filter: blur(8px);
 }
 
-.character-card {
-  text-align: center;
+.diorama-ledger {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.diorama-ledger th {
+  font-family: var(--font-meta);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--brass);
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid var(--brass-dim);
+  background: rgba(10, 14, 26, 0.6);
+}
+
+.diorama-ledger td {
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid rgba(212, 168, 84, 0.1);
+  font-size: 0.95rem;
+  vertical-align: top;
+}
+
+.diorama-ledger tr:last-child td {
+  border-bottom: none;
+}
+
+.ledger-index {
+  font-family: var(--font-meta);
+  font-size: 0.85rem;
+  color: var(--brass);
+  white-space: nowrap;
+}
+
+.ledger-body {
+  color: var(--ivory);
+  line-height: 1.65;
+  max-width: 32rem;
+}
+
+.ledger-body strong {
+  color: var(--brass);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.ledger-zone {
+  font-family: var(--font-meta);
+  font-size: 0.85rem;
+  color: var(--fog);
+  white-space: nowrap;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-family: var(--font-meta);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  border-radius: 2px;
+}
+
+.status-pill--absolute {
+  border: 1px solid var(--crimson);
+  color: #E25555;
+  background: rgba(139, 26, 26, 0.15);
+}
+
+.status-pill--active {
+  border: 1px solid var(--brass);
+  color: var(--brass);
+  background: rgba(212, 168, 84, 0.1);
+}
+
+.status-pill--binding {
+  border: 1px solid var(--fog);
+  color: var(--ivory);
+  background: rgba(74, 85, 104, 0.2);
+}
+
+/* ================================================
+   DIRECTORATE DOSSIERS
+   ================================================ */
+.directorate-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+}
+
+.dossier-card {
+  border: 1px solid var(--brass-dim);
+  background: rgba(28, 35, 51, 0.35);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  transition: border-color 0.3s ease;
+}
+
+.dossier-card:hover {
+  border-color: var(--brass);
+}
+
+.dossier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.dossier-stamp {
+  font-family: var(--font-meta);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid;
+}
+
+.stamp--red   { border-color: var(--crimson); color: #E25555; }
+.stamp--brass { border-color: var(--brass);   color: var(--brass); }
+.stamp--fog   { border-color: var(--fog);     color: var(--ivory); }
+
+.dossier-id {
+  font-family: var(--font-meta);
+  font-size: 0.75rem;
+  color: var(--fog);
 }
 
 .character-portrait {
-  width: 10rem;
-  height: 12rem;
-  margin: 0 auto 1.25rem;
-  overflow: hidden;
+  width: 100%;
+  height: 14rem;
+  margin-bottom: 1.5rem;
   position: relative;
+  overflow: hidden;
+  border: 1px solid var(--brass-dim);
 }
 
 .placeholder-portrait {
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to bottom,
-    var(--charcoal),
-    var(--midnight)
-  );
-  border-bottom: 2px solid var(--brass);
+  background: linear-gradient(to bottom, var(--charcoal), var(--midnight));
 }
 
 .character-name {
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.45rem;
+  font-weight: 900;
   color: var(--ivory);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
 }
 
 .character-role {
-  font-style: italic;
-  font-size: 0.95rem;
+  font-family: var(--font-meta);
+  font-size: 0.8rem;
   color: var(--brass);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.dossier-notes {
+  font-size: 0.9rem;
+  color: var(--fog);
+  line-height: 1.6;
 }
 
 /* ================================================
-   SECTION REVEALS — One consistent animation
+   SECTION REVEALS
    ================================================ */
 .diorama-reveal {
   opacity: 0;
@@ -501,72 +763,102 @@ body {
    FOOTER
    ================================================ */
 .footer {
-  padding: 3rem 2rem;
-  text-align: center;
-  border-top: 1px solid rgba(212, 168, 84, 0.15);
+  padding: 4.5rem 3.5rem;
+  border-top: 1px solid rgba(212, 168, 84, 0.2);
+  background: #070A12;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.footer-classification {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.footer-stamp {
+  font-family: var(--font-meta);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brass);
+  letter-spacing: 0.15em;
+}
+
+.footer-serial {
+  font-family: var(--font-meta);
+  font-size: 0.75rem;
+  color: var(--fog);
 }
 
 .footer-text {
   font-size: 0.9rem;
-  color: var(--fog);
-  margin-bottom: 0.5rem;
+  color: var(--ivory);
+  opacity: 0.8;
+  margin-bottom: 0.35rem;
 }
 
 .footer-subtext {
   font-size: 0.8rem;
-  font-style: italic;
+  font-family: var(--font-meta);
   color: var(--fog);
-  opacity: 0.6;
 }
 
 /* ================================================
-   RESPONSIVE — Graceful degradation for layers
+   RESPONSIVE DESIGN
    ================================================ */
-@media (max-width: 1024px) {
-  .diorama-layer[data-depth] {
-    /* Reduce parallax on tablets */
+@media (max-width: 1100px) {
+  .editorial-col {
+    grid-column: 1 / span 8;
   }
-
-  /* Hide foreground props — they crowd the content */
-  .diorama-layer[style*="--z: 30"] {
-    display: none;
+  .placeholder-character {
+    width: 50vw;
+  }
+  .directorate-grid {
+    grid-template-columns: 1fr;
+    max-width: 28rem;
   }
 }
 
-@media (max-width: 640px) {
-  .diorama-scene {
-    min-height: 85vh;
+@media (max-width: 768px) {
+  .nav {
+    padding: 1rem 1.5rem;
   }
-
-  /* Disable parallax on mobile */
-  .diorama-layer[data-depth] {
-    transform: none !important;
-  }
-
-  /* Keep only: background, character, textures, content */
-  .diorama-layer[style*="--z: 10"] {
+  .nav-links {
     display: none;
   }
-
+  .diorama-spine-runner {
+    display: none;
+  }
+  .diorama-scrim--stage-left {
+    background: rgba(10, 14, 26, 0.88);
+  }
+  .editorial-col {
+    grid-column: 1 / -1;
+    max-width: 100%;
+  }
+  .diorama-grid-content {
+    padding: 5rem 1.5rem 3rem;
+  }
+  .placeholder-character {
+    display: none;
+  }
+  .diorama-layer[style*="--z: 10"],
   .diorama-layer[style*="--z: 30"] {
     display: none;
   }
-
-  .diorama-content {
-    justify-content: flex-end;
-    padding-bottom: 3rem;
+  .masthead-watermark {
+    font-size: 5rem;
+    opacity: 0.08;
   }
-
-  .nav {
-    padding: 0.75rem 1.25rem;
+  .section {
+    padding: 4.5rem 1.5rem;
   }
-
-  .nav-links {
-    display: none; /* Hamburger menu in production */
-  }
-
-  .character-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  .footer {
+    padding: 3rem 1.5rem;
   }
 }

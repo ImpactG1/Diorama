@@ -3,179 +3,267 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Family — A Prohibition-Era Tale</title>
-  <meta name="description" content="Enter the speakeasy. Every empire starts with a single deal.">
+  <title>The Five Points Syndicate — Prohibition Surveillance Docket 1927</title>
+  <meta name="description" content="Department of Justice declassified surveillance log and syndicate ledger, District of New York, 1927.">
   <link rel="stylesheet" href="styles.css">
-  <!-- Art Bible typeface: Playfair Display (period-appropriate serif) + Libre Baskerville -->
+  
+  <!-- 3-Tier Locked Font System: Playfair Display (Display), Libre Baskerville (Editorial), Courier Prime (Archival Meta) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <!-- ============================================
-       NAVIGATION — Uses custom icon set, NOT default icons
+       NAVIGATION — Editorial & Archival Classification
        ============================================ -->
   <nav class="nav" id="main-nav" aria-label="Main navigation">
-    <a href="#" class="nav-logo">The Family</a>
+    <div class="nav-brand-group">
+      <a href="#" class="nav-logo">Five Points Syndicate</a>
+      <span class="nav-docket-badge" aria-label="Classification">FOLIO #884-NY</span>
+    </div>
     <ul class="nav-links">
-      <li><a href="#story">
+      <li><a href="#dossier">
         <span class="nav-icon nav-icon--enter" aria-hidden="true"></span>
-        Story
+        Dossier
       </a></li>
-      <li><a href="#family">
-        <span class="nav-icon nav-icon--fedora" aria-hidden="true"></span>
-        The Family
-      </a></li>
-      <li><a href="#code">
+      <li><a href="#covenants">
         <span class="nav-icon nav-icon--whiskey" aria-hidden="true"></span>
-        The Code
+        The Covenants
       </a></li>
-      <li><a href="#contact">
+      <li><a href="#directorate">
+        <span class="nav-icon nav-icon--fedora" aria-hidden="true"></span>
+        Directorate
+      </a></li>
+      <li><a href="#dispatch">
         <span class="nav-icon nav-icon--envelope" aria-hidden="true"></span>
-        Contact
+        Dispatch
       </a></li>
     </ul>
   </nav>
 
   <!-- ============================================
-       HERO SCENE — Layer-composited Diorama
-       Each layer is a real positioned DOM element.
+       HERO SCENE — Asymmetric 12-Col Grid & Depth Interleaving
        ============================================ -->
-  <section class="diorama-scene" id="hero-scene" aria-label="Hero scene">
+  <section class="diorama-scene archetype-split" id="hero-scene" aria-label="Hero scene">
 
-    <!-- z-index 0: Background plate — foggy street, no transparency needed -->
+    <!-- z-index 0: Background plate — foggy street, no people -->
     <div class="diorama-layer" data-depth="0" style="--z: 0">
-      <!--
-        In production: <img src="assets/background-plate.png" ...>
-        This example uses a CSS gradient placeholder to demonstrate structure.
-      -->
-      <div class="placeholder-bg" role="presentation" aria-hidden="true">
-        <!-- Placeholder for: Foggy Prohibition-era street at night -->
-      </div>
+      <div class="placeholder-bg" role="presentation" aria-hidden="true"></div>
     </div>
+
+    <!-- z-index 5: Directional Atmospheric Scrim — preserves contrast on stage-left -->
+    <div class="diorama-scrim diorama-scrim--stage-left" style="--z: 5" aria-hidden="true"></div>
 
     <!-- z-index 10: Midground props — Model T, lamp post -->
     <div class="diorama-layer" data-depth="0.3" style="--z: 10">
-      <!--
-        In production: <img src="assets/midground-props.png" alt="" role="presentation">
-        Generated on green screen → chroma keyed → verified alpha
-      -->
-      <div class="placeholder-layer placeholder-midground" role="presentation" aria-hidden="true">
-        <!-- Placeholder for: Parked car silhouette, lamp post -->
-      </div>
+      <div class="placeholder-layer placeholder-midground" role="presentation" aria-hidden="true"></div>
     </div>
 
-    <!-- z-index 20: Hero character — the focal figure -->
-    <div class="diorama-layer" data-depth="0.6" style="--z: 20">
-      <!--
-        In production: <img src="assets/hero-character.png"
-          alt="A man in a pinstripe suit and fedora, standing confidently with a cigarette">
-        This is the ONLY layer that gets a meaningful alt text.
-      -->
+    <!-- z-index 15: Back Typography (Interleaved Masthead BEHIND character) -->
+    <div class="diorama-layer diorama-masthead-back" data-depth="0.15" style="--z: 15" aria-hidden="true">
+      <span class="masthead-watermark">VITTORIO</span>
+    </div>
+
+    <!-- z-index 20: Hero character cutout — anchored stage-right, overlapping masthead -->
+    <div class="diorama-layer diorama-layer--hero" data-depth="0.5" style="--z: 20">
       <div class="placeholder-layer placeholder-character" role="img"
-           aria-label="A man in a pinstripe suit and fedora, standing confidently">
-        <!-- Placeholder for: Hero character cutout -->
-      </div>
+           aria-label="Don Vittorio in dark tailored overcoat and fedora, smoking under tungsten gas lamp"></div>
     </div>
 
-    <!-- z-index 30: Foreground props -->
-    <div class="diorama-layer" data-depth="0.9" style="--z: 30">
-      <div class="placeholder-layer placeholder-foreground" role="presentation" aria-hidden="true">
-        <!-- Placeholder for: Whiskey glass, revolver, bills -->
-      </div>
+    <!-- z-index 30: Foreground props framing bottom viewport -->
+    <div class="diorama-layer diorama-layer--fg" data-depth="0.85" style="--z: 30">
+      <div class="placeholder-layer placeholder-foreground" role="presentation" aria-hidden="true"></div>
     </div>
 
-    <!-- z-index 40: Texture — smoke (ambient drift animation) -->
+    <!-- z-index 40: Texture — smoke ambient drift -->
     <div class="diorama-layer diorama-texture diorama-texture--smoke diorama-ambient-drift"
          data-depth="0" style="--z: 40">
-      <div class="placeholder-layer placeholder-smoke" role="presentation" aria-hidden="true">
-        <!-- Placeholder for: Smoke wisps, mix-blend-mode: screen -->
-      </div>
+      <div class="placeholder-layer placeholder-smoke" role="presentation" aria-hidden="true"></div>
     </div>
 
-    <!-- z-index 41: Texture — film grain (static, overlay blend) -->
+    <!-- z-index 41: Texture — 35mm film grain -->
     <div class="diorama-layer diorama-texture diorama-texture--grain"
          data-depth="0" style="--z: 41">
-      <div class="placeholder-layer placeholder-grain" role="presentation" aria-hidden="true">
-        <!-- Placeholder for: 35mm film grain, mix-blend-mode: overlay -->
+      <div class="placeholder-layer placeholder-grain" role="presentation" aria-hidden="true"></div>
+    </div>
+
+    <!-- Marginalia: Vertical Spine Runner (left margin) -->
+    <aside class="diorama-spine-runner" style="--z: 45" aria-hidden="true">
+      <span>FEDERAL SURVEILLANCE LOG // VOLSTEAD ACT SEC. 29 // RECORDING DISTRICT 4</span>
+    </aside>
+
+    <!-- z-index 50: Interactive UI & Editorial Content (Asymmetric 12-col grid) -->
+    <div class="diorama-grid-content" style="--z: 50" id="dossier">
+      <div class="editorial-col">
+        <div class="archival-kicker">
+          <span class="stamp-badge">CASE FILE #1927-NY</span>
+          <span class="kicker-date">OCTOBER 14, 1927</span>
+        </div>
+        
+        <h1 class="hero-title">The Five Points Syndicate</h1>
+        
+        <p class="hero-lede">
+          Operating beyond municipal jurisdiction since the Volstead Act. Every cask cataloged, every debt honored, no testimony given.
+        </p>
+
+        <div class="editorial-meta-strip">
+          <div class="meta-item">
+            <span class="meta-label">PRIMARY HEADQUARTERS</span>
+            <span class="meta-val">Doyers St. Cellar #4</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">FEDERAL DISPOSITION</span>
+            <span class="meta-val status-alert">UNSUBDUED</span>
+          </div>
+        </div>
+
+        <div class="cta-group">
+          <a href="#covenants" class="cta-button" id="hero-cta">
+            <span class="cta-icon" aria-hidden="true"></span>
+            Inspect The Covenants
+          </a>
+          <a href="#directorate" class="secondary-btn">
+            Directory Roster
+          </a>
+        </div>
       </div>
     </div>
 
-    <!-- z-index 50: Content — REAL TEXT in the DOM, never baked into images -->
-    <div class="diorama-content" style="--z: 50">
-      <h1 class="hero-title">The Family</h1>
-      <p class="hero-tagline">Every empire starts with a single deal.</p>
-      <a href="#story" class="cta-button" id="hero-cta">
-        <span class="cta-icon" aria-hidden="true"></span>
-        Enter the Speakeasy
-      </a>
-    </div>
-
   </section>
 
   <!-- ============================================
-       THE CODE — Feature list with custom bullet motifs
-       Uses bullet-casing images instead of default <li> markers.
+       THE COVENANTS — Tabular Syndicate Ledger
+       Replaces generic bullets with an authentic historical ledger
        ============================================ -->
-  <section class="section section--code diorama-reveal" id="code">
+  <section class="section section--covenants diorama-reveal" id="covenants">
     <div class="section-inner">
-      <h2 class="section-title">The Code</h2>
-      <!-- Custom divider using generated Ace of Spades motif -->
-      <hr class="diorama-divider" aria-hidden="true">
-      <ul class="diorama-list">
-        <li>Family above everything. Blood is thicker than whiskey.</li>
-        <li>What's said in the back room stays in the back room.</li>
-        <li>A man's word is his bond. Break it, and you break yourself.</li>
-        <li>Respect is earned at the table, not demanded from a throne.</li>
-        <li>Never let them see you sweat. Composure is currency.</li>
-      </ul>
+      <div class="section-header-asymmetric">
+        <span class="section-eyebrow">UNREDACTED TRANSCRIPT</span>
+        <h2 class="section-title">The Syndicate Covenants</h2>
+        <p class="section-subtext">Sworn agreements recorded at the Chatham Square meeting, November 1926.</p>
+      </div>
+
+      <div class="ledger-container">
+        <table class="diorama-ledger" aria-label="Syndicate covenants ledger">
+          <thead>
+            <tr>
+              <th scope="col">INDEX</th>
+              <th scope="col">COVENANT TRANSCRIPT</th>
+              <th scope="col">JURISDICTION</th>
+              <th scope="col">ENFORCEMENT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ledger-index">COV-01</td>
+              <td class="ledger-body">
+                <strong>Silence on Municipal Inquiries.</strong> What transpires in the cellar remains sealed. Testimony given to federal agents constitutes immediate forfeiture of dividend and protection.
+              </td>
+              <td class="ledger-zone">Manhattan District</td>
+              <td><span class="status-pill status-pill--absolute">ABSOLUTE</span></td>
+            </tr>
+            <tr>
+              <td class="ledger-index">COV-02</td>
+              <td class="ledger-body">
+                <strong>Territorial Demarcation.</strong> North of 14th Street remains uninfringed. Distribution rights are tied strictly to warehouse manifests approved by the Consigliere.
+              </td>
+              <td class="ledger-zone">East River Piers</td>
+              <td><span class="status-pill status-pill--active">ENFORCED</span></td>
+            </tr>
+            <tr>
+              <td class="ledger-index">COV-03</td>
+              <td class="ledger-body">
+                <strong>Debt Reconciliation.</strong> Accounts receivable close upon delivery of unwatered crates. Counterfeit marks or short counts carry a penalty of total inventory seizure.
+              </td>
+              <td class="ledger-zone">Five Points Vault</td>
+              <td><span class="status-pill status-pill--active">ENFORCED</span></td>
+            </tr>
+            <tr>
+              <td class="ledger-index">COV-04</td>
+              <td class="ledger-body">
+                <strong>Arbitration of Disputes.</strong> Disagreements between ward captains are brought before the Patriarch on the first Monday of each lunar cycle. His judgment is final.
+              </td>
+              <td class="ledger-zone">Mulberry St. Chambers</td>
+              <td><span class="status-pill status-pill--binding">BINDING</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
   <!-- ============================================
-       THE FAMILY — Character cards section
-       Each card would use a separately generated character cutout.
+       THE DIRECTORATE — Asymmetric Character Dossiers
        ============================================ -->
-  <section class="section section--family diorama-reveal" id="family">
+  <section class="section section--directorate diorama-reveal" id="directorate">
     <div class="section-inner">
-      <h2 class="section-title">The Family</h2>
-      <hr class="diorama-divider" aria-hidden="true">
-      <div class="character-grid">
-        <article class="character-card">
+      <div class="section-header-asymmetric">
+        <span class="section-eyebrow">FIELD DOSSIERS</span>
+        <h2 class="section-title">The Directorate</h2>
+        <p class="section-subtext">Identified leadership figures currently under surveillance by Federal District Agents.</p>
+      </div>
+
+      <div class="directorate-grid">
+        <article class="dossier-card">
+          <div class="dossier-header">
+            <span class="dossier-stamp stamp--red">LEADER</span>
+            <span class="dossier-id">DOSSIER #01</span>
+          </div>
           <div class="character-portrait">
-            <!-- In production: <img src="assets/characters/the-boss.png"
-                 alt="The Boss — a weathered man in his 50s with steel-grey hair"> -->
-            <div class="placeholder-portrait" aria-label="The Boss"></div>
+            <div class="placeholder-portrait" aria-label="Don Vittorio portrait"></div>
           </div>
           <h3 class="character-name">Don Vittorio</h3>
-          <p class="character-role">The Patriarch</p>
+          <p class="character-role">District Custodian & Patriarch</p>
+          <p class="dossier-notes">
+            Oversees shipping manifests from the Canadian border. Never signs documents directly. Speaks fluent diplomatic French and Sicilian dialect.
+          </p>
         </article>
-        <article class="character-card">
-          <div class="character-portrait">
-            <div class="placeholder-portrait" aria-label="The Consigliere"></div>
+
+        <article class="dossier-card">
+          <div class="dossier-header">
+            <span class="dossier-stamp stamp--brass">COUNSEL</span>
+            <span class="dossier-id">DOSSIER #02</span>
           </div>
-          <h3 class="character-name">Salvatore</h3>
-          <p class="character-role">The Consigliere</p>
+          <div class="character-portrait">
+            <div class="placeholder-portrait" aria-label="Salvatore portrait"></div>
+          </div>
+          <h3 class="character-name">Salvatore Morretti</h3>
+          <p class="character-role">Consigliere & Legal Custodian</p>
+          <p class="dossier-notes">
+            Former municipal clerk. Manages bail bonds, brewery leases, and municipal liaison payouts. Retains all cipher books.
+          </p>
         </article>
-        <article class="character-card">
-          <div class="character-portrait">
-            <div class="placeholder-portrait" aria-label="The Enforcer"></div>
+
+        <article class="dossier-card">
+          <div class="dossier-header">
+            <span class="dossier-stamp stamp--fog">LOGISTICS</span>
+            <span class="dossier-id">DOSSIER #03</span>
           </div>
-          <h3 class="character-name">Elena</h3>
-          <p class="character-role">The Enforcer</p>
+          <div class="character-portrait">
+            <div class="placeholder-portrait" aria-label="Elena portrait"></div>
+          </div>
+          <h3 class="character-name">Elena Vance</h3>
+          <p class="character-role">Fleet Director & Enforcement</p>
+          <p class="dossier-notes">
+            Commands twenty-four modified Mack trucks equipped with secret false-bottom cargo chassis. Veteran of waterfront disputes.
+          </p>
         </article>
       </div>
     </div>
   </section>
 
   <!-- ============================================
-       FOOTER
+       FOOTER — Declassified Document Colophon
        ============================================ -->
-  <footer class="footer" id="contact">
+  <footer class="footer" id="dispatch">
     <div class="footer-inner">
-      <p class="footer-text">© 1927 The Family. All rights reserved in perpetuity.</p>
-      <p class="footer-subtext">This establishment does not exist. You were never here.</p>
+      <div class="footer-classification">
+        <span class="footer-stamp">PROHIBITION DIVISION ARCHIVE</span>
+        <span class="footer-serial">CASE FILE REF: NY-1927-SEC29-B</span>
+      </div>
+      <p class="footer-text">Declassified record of the United States Department of Justice, District of New York.</p>
+      <p class="footer-subtext">All references, manifests, and covenants are preserved for historical record.</p>
     </div>
   </footer>
 
@@ -219,14 +307,13 @@
         return;
       }
 
-      // Trigger after a short delay to let the page settle
       setTimeout(() => {
         scene.classList.add('is-revealed');
-      }, 200);
+      }, 150);
     }
 
     /* ================================================
-       SECTION REVEALS — One consistent animation
+       SECTION REVEALS — One consistent subtle reveal
        ================================================ */
     function initSectionReveals() {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -253,7 +340,6 @@
       sections.forEach(section => observer.observe(section));
     }
 
-    /* Initialize everything */
     document.addEventListener('DOMContentLoaded', () => {
       initDioramaEntrance();
       initDioramaParallax();
