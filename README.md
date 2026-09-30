@@ -11,13 +11,13 @@
 <p align="center">
   <a href="https://github.com/ImpactG1/Diorama/stargazers"><img src="https://img.shields.io/github/stars/ImpactG1/Diorama?style=for-the-badge&color=D4A854&logo=github" alt="Stars" /></a>
   <a href="https://github.com/ImpactG1/Diorama/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT" /></a>
-  <a href="https://github.com/ImpactG1/Diorama/actions"><img src="https://img.shields.io/badge/Anti--Slop%20Linter-PASSED-brightgreen?style=for-the-badge" alt="Linter Passed" /></a>
+  <a href="#-the-anti-slop-linter-lint_anti_sloppy"><img src="https://img.shields.io/badge/Anti--Slop%20Linter-PASSED-brightgreen?style=for-the-badge" alt="Linter Passed" /></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python" alt="Python" /></a>
   <a href="#-quickstart--agent-installation"><img src="https://img.shields.io/badge/Agents-Claude%20%7C%20Antigravity%20%7C%20Cursor-8A2BE2?style=for-the-badge" alt="Agents" /></a>
 </p>
 
 <p align="center">
-  <a href="https://impactg1.github.io/Diorama/"><strong>🌐 [ Live Interactive Demo ]</strong></a> &nbsp;•&nbsp;
+  <a href="examples/mafia-landing/"><strong>📁 [ Mafia Landing Example ]</strong></a> &nbsp;•&nbsp;
   <a href="#-the-diorama-anatomy"><strong>🏗️ Architecture</strong></a> &nbsp;•&nbsp;
   <a href="#-true-alpha-recovery-pipeline-no-painted-checkerboards"><strong>🧪 Alpha Pipeline</strong></a> &nbsp;•&nbsp;
   <a href="#-the-anti-slop-linter-lint_anti_sloppy"><strong>🚨 Anti-Slop Linter</strong></a> &nbsp;•&nbsp;
