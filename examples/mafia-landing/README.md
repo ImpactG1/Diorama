@@ -1,6 +1,6 @@
 # Mafia Landing Page — Process Walkthrough
 
-This example shows the complete Diorama process from brief to finished page. It uses placeholder elements instead of actual generated images to demonstrate the structure without large binary files.
+This example shows the complete Diorama process from brief to finished page, featuring fully keyed transparent cutouts and rendered atmosphere plates to demonstrate live depth compositing.
 
 ---
 

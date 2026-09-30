@@ -172,14 +172,15 @@ body {
 .placeholder-bg {
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    135deg,
-    var(--midnight) 0%,
-    var(--charcoal) 30%,
-    #0E1524 50%,
-    var(--charcoal) 75%,
-    var(--midnight) 100%
-  );
+  background: url('background-plate.jpg') center center / cover no-repeat,
+    linear-gradient(
+      135deg,
+      var(--midnight) 0%,
+      var(--charcoal) 30%,
+      #0E1524 50%,
+      var(--charcoal) 75%,
+      var(--midnight) 100%
+    );
   position: relative;
 }
 
@@ -253,12 +254,8 @@ body {
   max-width: 620px;
   height: 88vh;
   margin-right: 4%;
-  background: radial-gradient(
-    ellipse at 50% 48%,
-    rgba(10, 14, 26, 0.7) 0%,
-    transparent 55%
-  );
-  border-bottom: 2px solid rgba(212, 168, 84, 0.35);
+  background: url('hero-character.png') bottom center / contain no-repeat;
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.7));
 }
 
 .diorama-layer--fg {
